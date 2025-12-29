@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  spark:
+    build: .
+    volumes:
+      - ~/.aws:/home/spark/.aws:ro
+      - ../src:/app/src
+    environment:
+      AWS_PROFILE: lakehouse-dev
+    command: spark-submit src/lakehouse/main.py

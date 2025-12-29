@@ -1,0 +1,10 @@
+environment: dev
+
+s3:
+  bucket: lakehouse-assurance-dev
+
+glue:
+  database: lakehouse_assurance_dev
+
+logging:
+  level: INFO

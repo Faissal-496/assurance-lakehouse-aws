@@ -1,0 +1,10 @@
+environment: prod
+
+s3:
+  bucket: lakehouse-assurance-prod
+
+glue:
+  database: lakehouse_assurance_prod
+
+logging:
+  level: WARN
