@@ -2,10 +2,31 @@ version: "3.9"
 
 services:
   spark:
-    build: .
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: lakehouse-spark:dev
+    container_name: lakehouse-spark
+    tty: true
+    stdin_open: true
+    env_file:
+      - ../.env  #variables AWS et autres secrets 
     volumes:
-      - ~/.aws:/home/spark/.aws:ro
-      - ../src:/app/src
-    environment:
-      AWS_PROFILE: lakehouse-dev
-    command: spark-submit src/lakehouse/main.py
+      - ../src:/opt/lakehouse/lakehouse
+      - ../config:/opt/lakehouse/config:ro
+      - lakehouse_data:/opt/lakehouse/data #volume pour les fichiers lourds
+    depends_on:
+      - data_init
+    command: tail -f /dev/null  # Garde le conteneur actif pour exec
+
+  data_init:
+    image: alpine
+    volumes:
+      - ../data:/tmp/data:ro
+      - lakehouse_data:/opt/lakehouse/data
+    entrypoint: ["sh", "-c", "cp -rn /tmp/data/* /opt/lakehouse/data/ || true"]
+    restart: "no"
+
+volumes:
+  lakehouse_data:
+    driver: local
