@@ -1,10 +1,10 @@
 environment: dev
 
 s3:
-  bucket: lakehouse-assurance-dev
+  bucket: # your-dev-bucket-name
 
 glue:
-  database: lakehouse_assurance_dev
+  database: # your_dev_glue_database_name
 
 logging:
   level: INFO
