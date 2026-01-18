@@ -1,10 +1,10 @@
 environment: prod
 
 s3:
-  bucket: lakehouse-assurance-prod
+  bucket: # your-prod-bucket-name
 
 glue:
-  database: lakehouse_assurance_prod
+  database: # your_prod_glue_database_name
 
 logging:
   level: WARN
