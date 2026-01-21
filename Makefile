@@ -15,10 +15,14 @@ down:
 	$(compose) down
 logs:
 	$(compose) logs -f
-# -----------------------------
+# -----------------------------docker 
 # Lancer les scripts Spark
 # -----------------------------
 run-bronze:
 	docker exec -it $(SPARK_CONTAINER) env PYTHONPATH=/opt/lakehouse/lakehouse spark-submit $(SCRIPT_PATH)
 run-bronze-with-glue:
 	docker exec -it $(SPARK_CONTAINER) env PYTHONPATH=/opt/lakehouse/lakehouse spark-submit $(SCRIPT_GLUE_PATH)
+
+run-spark-bash:
+	docker exec -it $(SPARK_CONTAINER) bash
+
