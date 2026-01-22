@@ -18,6 +18,10 @@ run-bronze:
 	docker exec -it $(SPARK_CONTAINER) env PYTHONPATH=/opt/lakehouse/lakehouse spark-submit $(SCRIPT_PATH)
 run-bronze-with-glue:
 	docker exec -it $(SPARK_CONTAINER) env PYTHONPATH=/opt/lakehouse/lakehouse spark-submit $(SCRIPT_GLUE_PATH)
+
+run-spark-bash:
+	docker exec -it $(SPARK_CONTAINER) bash
+
 run-spak-bash:
 	docker exec -it $(SPARK_CONTAINER) bash
 

@@ -67,6 +67,14 @@ def main():
     df_contrat2 = read_csv(spark, input_contrat2, schema=CONTRAT2_SCHEMA)
     write_parquet(df_contrat2, output_contrat2)
 
+    # Ingestion Contrat1
+    input_contrat1 = resolver.local_input("contrat1.csv")
+    output_contrat1 = resolver.s3_layer_path("bronze", "contrat1")
+    print("[INFO] --- Ingestion Contrat1 ---")
+    df_contrat1 = read_csv(spark, input_contrat1, schema=CONTRAT2_SCHEMA)
+    write_parquet(df_contrat1, output_contrat1)
+
+
     # Ingestion Client
     input_client = resolver.local_input("client.csv")
     output_client = resolver.s3_layer_path("bronze", "Client")
