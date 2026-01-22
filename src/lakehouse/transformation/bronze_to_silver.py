@@ -1,6 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import sum as spark_sum
 from pyspark.sql.functions import col
+from lakehouse.paths import PathResolver
 
 
 spark = (
@@ -12,12 +13,12 @@ spark = (
 
 resolver = PathResolver()
 
-s3_path = resolver.s3_layer_path(
+s3_bronze_path_Contrat2 = resolver.s3_layer_path(
     layer="bronze",
     dataset="Contrat2"
 )
 
-df = spark.read.parquet(s3_path)
+df = spark.read.parquet(s3_bronze_path_Contrat2 )
 
 df.printSchema()
 df.show(5)
