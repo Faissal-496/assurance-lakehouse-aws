@@ -5,8 +5,8 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    image: lakehouse-spark:dev
-    container_name: lakehouse-spark
+    image: spark-lakehouse:dev
+    container_name: spark-lakehouse
     tty: true
     stdin_open: true
     env_file:
@@ -17,6 +17,12 @@ services:
       - lakehouse_data:/opt/lakehouse/data #volume pour les fichiers lourds
     depends_on:
       - data_init
+    
+    ports:
+      - "4040:4040"   # spark UI
+      - "8888:8888"   # jupyter
+      - "18080:18080" #spark History Server
+
     command: tail -f /dev/null  # Garde le conteneur actif pour exec
 
   data_init:
