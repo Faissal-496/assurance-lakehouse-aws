@@ -3,6 +3,7 @@ from pyspark.sql.functions import col, when
 import sys
 from pyspark.sql.functions import expr
 from pyspark.sql.functions import lit, col, year, current_date
+from pyspark.sql.functions import col, lit
 
 
 # =========================
@@ -38,6 +39,8 @@ s3_silver_path = resolver.s3_layer_path(
     layer="silver",
     dataset="contrat_silver"
 )
+
+
 
 # =========================
 # READ BRONZE DATA 
@@ -166,13 +169,83 @@ df_silver = df_silver.withColumn(
 
 
 
+# -----------------------------------------  .. Table Client  ..-----------------------------*****
+
+# =========================
+# READ BRONZE DATA CLIENT
+# =========================
+
+s3_bronze_path_client = resolver.s3_layer_path(
+    layer="bronze",
+    dataset="Client"
+) 
+s3_silver_path_client_contrat = resolver.s3_layer_path(
+    layer="silver",
+    dataset="Client_contrat_silver"
+) 
+
+df_c = spark.read.parquet(s3_bronze_path_client)
+
+
+#Etape 1: Calcul de l'âge du client
+
+ANNEE_ETUDE = 2022
+
+df_client_silver = df_c.withColumn(
+    "age_client",
+    lit(ANNEE_ETUDE) - col("anaiso")
+)
+
+
+#Étape 2 : contrôle qualité
+df_client_silver = df_client_silver.filter(
+    (col("age_client") >= 14) &
+    (col("age_client") <= 100)
+)
+
+#  Étape 3 : flag “jeune < 30”
+
+from pyspark.sql.functions import when
+
+df_client_silver = df_client_silver.withColumn(
+    "client_jeune",
+    when(col("age_client") < 30, 1).otherwise(0)
+)
+
+# Jointure CLIENT ↔ CONTRAT (Silver)
+
+df_silver_global = df_silver.join(
+    df_client_silver.select(
+        "nusoc", "age_client", "client_jeune", "sexsoc",
+        "cspsoc", "sitmat", "sitpav1"
+    ),
+    on="nusoc",
+    how="inner"
+)
+
+
+#Profil des jeunes
+df_silver_global = df_silver_global.withColumn(
+    "jeune_moto",
+    when((col("client_jeune") == 1) & (col("cateco") == "M"), 1).otherwise(0)
+)
+
+#Objectif 2 :  points taux de résiliation
+
+df_silver_global = df_silver_global.withColumn(
+    "contrat_actif",
+    when(col("etatco") == 1, 1).otherwise(0)
+)
+
 
 
 # =========================
-# WRITE SILVER
+# WRITE SILVER DATA (contrat + client)
 # =========================
 df_silver.write \
     .mode("overwrite") \
-    .parquet(s3_silver_path)
+    .parquet(s3_silver_path_client_contrat )
+
+
 
 spark.stop()
