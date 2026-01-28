@@ -149,6 +149,7 @@ df_silver = df_silver.withColumn(
 
                 # =========================
                     # - ||| 3-- Création de variables analytiques clés  ||
+                    #annee_souscription, anciennete_contrat
                 # =========================
 
 # =========================
@@ -224,7 +225,7 @@ df_silver_global = df_silver.join(
 )
 
 
-#Profil des jeunes
+#Profil des jeunes moto
 df_silver_global = df_silver_global.withColumn(
     "jeune_moto",
     when((col("client_jeune") == 1) & (col("cateco") == "M"), 1).otherwise(0)
