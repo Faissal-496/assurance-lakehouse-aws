@@ -6,6 +6,7 @@ from pyspark.sql.functions import lit, col, year, current_date
 from pyspark.sql.functions import col, lit
 
 
+
 # =========================
 # SPARK SESSION
 # =========================
@@ -18,7 +19,7 @@ spark = (
 spark.sparkContext.setLogLevel("WARN")
 
 # =========================
-# PATH RESOLVER (IDENTIQUE)
+# PATH RESOLVER 
 # =========================
 sys.path.append("/opt/lakehouse/lakehouse")
 from lakehouse.paths import PathResolver
@@ -205,7 +206,6 @@ df_client_silver = df_client_silver.filter(
 
 #  Étape 3 : flag “jeune < 30”
 
-from pyspark.sql.functions import when
 
 df_client_silver = df_client_silver.withColumn(
     "client_jeune",
