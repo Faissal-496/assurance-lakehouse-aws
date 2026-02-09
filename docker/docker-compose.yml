@@ -9,21 +9,26 @@ services:
     container_name: spark-lakehouse
     tty: true
     stdin_open: true
+    environment:
+      - APP_ENV=dev
+      - S3_BUCKET=lakehouse-assurance-moto-dev
+      - GLUE_DB_NAME=lakehouse_assurance_moto_catalog
+      - DATA_BASE_PATH=/opt/lakehouse/data
     env_file:
-      - ../.env  #variables AWS et autres secrets 
+      - ../.env
     volumes:
-      - ../src:/opt/lakehouse/lakehouse
+      - ../src:/opt/lakehouse/src
       - ../config:/opt/lakehouse/config:ro
-      - lakehouse_data:/opt/lakehouse/data #volume pour les fichiers lourds
+      - lakehouse_data:/opt/lakehouse/data
     depends_on:
       - data_init
     
     ports:
-      - "4040:4040"   # spark UI
-      - "8888:8888"   # jupyter
-      - "18080:18080" #spark History Server
-
-    command: tail -f /dev/null  # Garde le conteneur actif pour exec
+      - "4040:4040"   # Spark UI
+      - "8888:8888"   # Jupyter
+      - "18080:18080" # Spark History Server
+      
+    command: tail -f /dev/null
 
   data_init:
     image: alpine

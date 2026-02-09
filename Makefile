@@ -1,32 +1,44 @@
-# Makefile pour lancer les scripts Spark
+# Makefile - Lakehouse Pipeline Commands
 compose = docker compose -f docker/docker-compose.yml
 SPARK_CONTAINER = spark-lakehouse
-SCRIPT_PATH = /opt/lakehouse/lakehouse/lakehouse/ingestion/bronze_ingest.py
-SCRIPT_GLUE_PATH = /opt/lakehouse/lakehouse/lakehouse/ingestion/bronze_ingest_with_glue.py
+PYTHON_PATH = /opt/lakehouse/src
 
-# Build / Up / Down et log
+# Container management
 build:
 	$(compose) build --no-cache
+
 up:
 	$(compose) up -d
+
 down:
 	$(compose) down
+
 logs:
 	$(compose) logs -f
-# Lancer les scripts Spark
+
+shell:
+	docker exec -it $(SPARK_CONTAINER) bash
+
+# Spark-submit commands (correct paths)
 run-bronze:
-	docker exec -it $(SPARK_CONTAINER) env PYTHONPATH=/opt/lakehouse/lakehouse spark-submit $(SCRIPT_PATH)
-run-bronze-with-glue:
-	docker exec -it $(SPARK_CONTAINER) env PYTHONPATH=/opt/lakehouse/lakehouse spark-submit $(SCRIPT_GLUE_PATH)
+	docker exec -it $(SPARK_CONTAINER) env PYTHONPATH=$(PYTHON_PATH) \
+	spark-submit /opt/lakehouse/src/lakehouse/ingestion/bronze_ingest.py
 
-run-spark-bash:
-	docker exec -it $(SPARK_CONTAINER) bash
+run-silver:
+	docker exec -it $(SPARK_CONTAINER) env PYTHONPATH=$(PYTHON_PATH) \
+	spark-submit /opt/lakehouse/src/lakehouse/transformation/bronze_to_silver.py
 
-run-spak-bash:
-	docker exec -it $(SPARK_CONTAINER) bash
+run-gold:
+	docker exec -it $(SPARK_CONTAINER) env PYTHONPATH=$(PYTHON_PATH) \
+	spark-submit /opt/lakehouse/src/lakehouse/transformation/silver_to_gold.py
 
-run-jupyter-lab:
+# Complete pipeline (recommended)
+run-pipeline:
+	docker exec -it $(SPARK_CONTAINER) env PYTHONPATH=$(PYTHON_PATH) \
+	spark-submit /opt/lakehouse/src/lakehouse/main.py
 
+# Jupyter Lab for interactive development
+run-jupyter:
 	docker exec -it \
   -w /home/spark \
   -e PYSPARK_DRIVER_PYTHON=jupyter \
@@ -34,11 +46,27 @@ run-jupyter-lab:
   $(SPARK_CONTAINER) \
   pyspark
 
-run-silver:
-	docker exec -it $(SPARK_CONTAINER) env PYTHONPATH=/opt/lakehouse/lakehouse spark-submit /opt/lakehouse/lakehouse/lakehouse/transformation/bronze_to_silver.py
+# Development helpers
+test-imports:
+	docker exec -it $(SPARK_CONTAINER) env PYTHONPATH=$(PYTHON_PATH) \
+	python3 -c "from lakehouse.paths import PathResolver; print('✅ Imports OK')"
 
-run-gold:
-	docker exec -it $(SPARK_CONTAINER) env PYTHONPATH=/opt/lakehouse/lakehouse spark-submit /opt/lakehouse/lakehouse/lakehouse/transformation/silver_to_gold.py
-
-run-main:
-	docker exec -it $(SPARK_CONTAINER) env PYTHONPATH=/opt/lakehouse/lakehouse spark-submit /opt/lakehouse/lakehouse/lakehouse/main.py
+info:
+	@echo "=== Lakehouse Pipeline ==="
+	@echo "Available commands:"
+	@echo "  make build          - Build Docker image"
+	@echo "  make up             - Start containers"
+	@echo "  make down           - Stop containers"
+	@echo "  make logs           - View container logs"
+	@echo "  make shell          - Open Spark container shell"
+	@echo ""
+	@echo "Pipeline execution:"
+	@echo "  make run-bronze     - Run bronze ingestion"
+	@echo "  make run-silver     - Run silver transformation"
+	@echo "  make run-gold       - Run gold transformation"
+	@echo "  make run-pipeline   - Run complete ETL pipeline"
+	@echo ""
+	@echo "Development:"
+	@echo "  make run-jupyter    - Launch Jupyter Lab"
+	@echo "  make test-imports   - Verify Python imports"
+	@echo ""

@@ -45,13 +45,13 @@ print(f"   - KPI records: {len(kpi_df)}")
 print(f"   - Silver records: {len(silver_df)}")
 
 #  DEBUG: Print KPI columns
-print("\n🔍 DEBUG - KPI DataFrame columns:")
+print("\nDEBUG - KPI DataFrame columns:")
 print(kpi_df.columns.tolist())
 print("\nKPI DataFrame head:")
 print(kpi_df.head())
 
 #  DEBUG: Print Silver columns
-print("\n🔍 DEBUG - Silver DataFrame columns:")
+print("\nDEBUG - Silver DataFrame columns:")
 print(silver_df.columns.tolist())
 
 # =========================
@@ -512,12 +512,12 @@ print("="*80)
 
 print("\nSaved visualizations:")
 print("  1️⃣  /tmp/dashboard_1_kpi_indicators.png")
-print("  2️⃣  /tmp/dashboard_2_vehicle_distribution.png")
-print("  3️⃣  /tmp/dashboard_3_age_analysis.png")
-print("  4️⃣  /tmp/dashboard_4_risk_profiling.png")
-print("  5️⃣  /tmp/dashboard_5_contract_status.png")
+print("  2.  /tmp/dashboard_2_vehicle_distribution.png")
+print("  3.  /tmp/dashboard_3_age_analysis.png")
+print("  4.  /tmp/dashboard_4_risk_profiling.png")
+print("  5.  /tmp/dashboard_5_contract_status.png")
 
-print("\n📈 KEY INSIGHTS:")
+print("\nKEY INSIGHTS:")
 print(f"  • Total Contracts: {len(silver_df)}")
 print(f"  • Young Customers (<30): {(silver_df['client_jeune']==1).sum()}")
 print(f"  • Young Moto Riders: {(silver_df['jeune_moto']==1).sum()}")
