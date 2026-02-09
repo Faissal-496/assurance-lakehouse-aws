@@ -243,7 +243,7 @@ df_silver_global = df_silver_global.withColumn(
 # =========================
 # WRITE SILVER DATA (contrat + client)
 # =========================
-df_silver.write \
+df_silver_global.write \
     .mode("overwrite") \
     .parquet(s3_silver_path_client_contrat )
 
