@@ -1,0 +1,56 @@
+# Identity & Metadata
+identity:
+  role_name: lakehouse-assurance-dev-role
+  environment: development
+  project: Lakehouse Assurance
+  description: >
+    IAM role required for running Spark-based data pipelines. 
+    Attached to EC2 instances.
+
+# Security Posture & Compliance
+governance:
+  assumptions:
+    - mechanism: EC2 Instance Profile (No long-lived keys)
+    - scope: Environment-scoped permissions
+    - strategy: Principle of least privilege (PoLP)
+  guardrails:
+    explicitly_forbidden:
+      - iam:*
+      - s3:DeleteBucket
+      - s3:PutBucketPolicy
+      - ec2:TerminateInstances
+      - kms:DisableKey
+
+# Access Control Matrix
+permissions:
+  storage:
+    service: s3
+    actions:
+      - s3:GetObject
+      - s3:PutObject
+      - s3:ListBucket
+    constraints:
+      - "No wildcard access (*)"
+      - "Must not write outside project S3 prefix" # Déplacé depuis les notes
+
+  metadata_catalog:
+    service: glue
+    actions:
+      - glue:GetDatabase
+      - glue:GetTable
+      - glue:GetTables
+      - glue:CreateTable
+      - glue:UpdateTable
+    constraints:
+      - "Creation limited to 'lakehouse_assurance_dev' database" # Déplacé depuis les notes
+
+  observability:
+    service: logs
+    actions:
+      - logs:CreateLogStream
+      - logs:PutLogEvents
+
+# Additional Security Context
+security_notes:
+  - "Permissions must be environment-scoped"
+  - "Verify KMS permissions if S3 buckets use SSE-KMS encryption"
