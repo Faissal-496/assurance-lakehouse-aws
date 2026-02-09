@@ -19,11 +19,11 @@ services:
       - data_init
     
     ports:
-      - "4040:4040"   # spark UI
-      - "8888:8888"   # jupyter
+      - "4040:4040" #spark UI
+      - "8888:8888" #jupyter (juste pour le dev local, pas nécessaire en prod) 
       - "18080:18080" #spark History Server
-
-    command: tail -f /dev/null  # Garde le conteneur actif pour exec
+      
+    command: tail -f /dev/null  # le conteneur reste actif pour exec
 
   data_init:
     image: alpine
