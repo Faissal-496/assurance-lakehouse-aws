@@ -17,7 +17,7 @@ WORKDIR /opt/lakehouse
 RUN apt-get update && \
     apt-get install -y python3-pip && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/
 
 # Python dependencies (NO SECRETS)
 COPY requirements.txt /tmp/requirements.txt

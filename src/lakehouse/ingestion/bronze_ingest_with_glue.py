@@ -50,7 +50,7 @@ def write_parquet(df, output_path: str):
     try:
         print(f"[INFO] Écriture Parquet : {output_path}")
         df.write.mode("overwrite").parquet(output_path)
-        print("[INFO] Écriture réussie ✅")
+        print("[INFO] Écriture réussie")
     except Exception as e:
         print(f"[ERROR] Erreur écriture Parquet : {e}")
         traceback.print_exc()
@@ -67,7 +67,7 @@ def create_glue_table(spark: SparkSession, table_name: str, s3_path: str, schema
                 .format("parquet") \
                 .option("path", s3_path) \
                 .saveAsTable(f"{db_name}.{table_name}")
-        print(f"[INFO] Table Glue {db_name}.{table_name} créée/mise à jour ✅")
+        print(f"[INFO] Table Glue {db_name}.{table_name} créée/mise à jour")
     except Exception as e:
         print(f"[ERROR] Erreur création table Glue {db_name}.{table_name} : {e}")
         traceback.print_exc()
@@ -103,7 +103,7 @@ def main():
     # Fin pipeline
     # -----------------------
     spark.stop()
-    print("[INFO] Pipeline Bronze terminé avec succès ✅")
+    print("[INFO] Pipeline Bronze terminé avec succès ")
 
 
 if __name__ == "__main__":
