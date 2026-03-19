@@ -30,3 +30,11 @@ data/
 .DS_Store
 requirements.lock
 requirements.lock
+
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/terraform.tfvars
+terraform/backend.hcl
+terraform/outputs.json
