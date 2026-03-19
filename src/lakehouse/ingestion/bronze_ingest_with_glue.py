@@ -59,7 +59,7 @@ def write_parquet(df, output_path: str):
 
 def create_glue_table(spark: SparkSession, table_name: str, s3_path: str, schema):
     """Créer ou mettre à jour une table Glue à partir d'un DataFrame"""
-    db_name = os.getenv("GLUE_DB_NAME", "lakehouse_assurance_moto_catalog")
+    db_name = os.getenv("GLUE_DATABASE") or os.getenv("GLUE_DB_NAME", "lakehouse_assurance_moto_catalog")
     try:
         print(f"[INFO] Création / mise à jour table Glue : {db_name}.{table_name}")
         df = spark.read.schema(schema).parquet(s3_path)

@@ -1,20 +1,20 @@
-# Lakehouse Architecture
+# Architecture
 
-## Overview
+## Vue globale
+La plateforme suit un modèle Lakehouse sur AWS avec Airflow en haute disponibilité, Spark pour le traitement, et Terraform pour l’infrastructure.
 
-This project implements a lightweight Lakehouse architecture on AWS designed
-for cost efficiency, resilience, and analytical use cases.
+## Flux principal
+- GitHub héberge le code, les DAGs et Terraform
+- Jenkins déclenche la CI/CD et construit les images
+- Les images sont poussées dans ECR
+- Airflow récupère les DAGs via GitSync
+- Les jobs Spark s’exécutent via EMR Serverless
 
-## Core Components
+## Composants
+- ALB public HTTPS pour Jenkins et Airflow
+- EC2 privés pour Jenkins et Airflow
+- Amazon MQ pour Celery
+- RDS PostgreSQL pour Airflow
+- S3 pour le Data Lake
+- Glue pour le catalogue
 
-- Amazon S3 as the primary storage layer
-- Apache Spark for batch data processing
-- AWS Glue Catalog for metadata management
-- EC2 for execution with strict cost control
-
-## Key Design Principles
-
-- Stateless and idempotent pipelines
-- Explicit data contracts
-- Minimal AWS services usage
-- Cost-aware engineering
