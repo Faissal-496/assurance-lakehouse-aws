@@ -49,7 +49,7 @@ run-jupyter:
 # Development helpers
 test-imports:
 	docker exec -it $(SPARK_CONTAINER) env PYTHONPATH=$(PYTHON_PATH) \
-	python3 -c "from lakehouse.paths import PathResolver; print('✅ Imports OK')"
+	python3 -c "from lakehouse.paths import PathResolver; print('Imports OK')"
 
 info:
 	@echo "=== Lakehouse Pipeline ==="
